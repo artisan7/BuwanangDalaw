@@ -1,0 +1,9 @@
+boarder_code,boarder_name,bdate,pnumber,referrer,status
+001,Adrian Ablaz,5/10/1985,09281238991,none,1
+002,Mary Tacas-Tacas,6/19/1975,09123456789,none,1
+003,Anne Marie,10/11/1995,0822212111,none,1
+004,Doddong Mike,11/29/1994,09271234567,Adrian Ablaz,1
+005,Eddie Villa,2/28/1981,09101224444,Adrian Ablaz,1
+006,Rey Jay,4/23/1990,+639280001221,Mary Tacas-Tacas,1
+007,Ramon Bong,8/29/1991,09221819292,Doddong Mike,1
+008,Jose Santos,2/28/1980,09281234122,none,1

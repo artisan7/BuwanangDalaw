@@ -1,0 +1,6 @@
+housecode,housename,address
+BHGN1,NHA Buhangin,B1 L2 NHA Buhangin Davao City
+BHGN2,NHA Buhangin,B8 L4 NHA Buhangin Davao City
+CBTN1,DECA Cabantian,Deca Homes Cabantian Davao City
+TRL1,DECA Toril,Deca Homes Toril Davao City
+GSIS1,GSIS Matina,GSIS Matina Davao City
