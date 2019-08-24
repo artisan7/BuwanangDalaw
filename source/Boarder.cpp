@@ -14,12 +14,21 @@ std::string Boarder::getStatus() {
 
 // STATIC FUNCTIONS
 // viewAll -> displays all boarders in the boarder list
-void Boarder::viewAll(std::vector<Boarder> boarders) {
+void Boarder::viewAll(std::vector<Boarder>& boarders) {
 	printf("%-10s%-20s%-20s%-15s%-20s%-10s\n", "#", "Full Name", "Birth Date", "Phone Number", "Referrer", "Status");
 	printf("%-10s%-20s%-20s%-15s%-20s%-10s\n", "-----", "-----", "-----", "-----", "-----", "-----");
 
 	for (std::vector<Boarder>::iterator itr = boarders.begin(); itr != boarders.end(); itr++)
 		itr->display();
+}
+
+// search -> searches a boarder with boarder code from the list of boarders
+Boarder* Boarder::search(std::vector<Boarder>& boarders, std::string& boarderCode) {
+	for (std::vector<Boarder>::iterator itr = boarders.begin(); itr != boarders.end(); itr++) {
+		if (itr->code == boarderCode)
+			return &(*itr);
+	}
+	return nullptr;
 }
 
 // OTHER FUNCTIONS

@@ -4,12 +4,16 @@
 
 // CONSTRUCTOR
 Assignment::Assignment(std::string bCode, std::string rmNumber, Date assignDate, bool status)
-	: boarderCode(bCode), roomNumber(rmNumber), assignDate(assignDate), status(status) {}
+	: boarderCode(bCode), roomNumber(rmNumber), assignDate(assignDate), status(status), boarder(nullptr), room(nullptr) {}
 
 // getters
 // getStatus -> returns active/inactive depending on value
 std::string Assignment::getStatus() {
 	return (status) ? "active" : "inactive";
+}
+
+Boarder & Assignment::getBoarder() {
+	return *boarder;
 }
 
 // static functions

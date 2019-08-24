@@ -21,7 +21,8 @@ public:
 	std::string getStatus();
 
 	// static functions
-	static void viewAll(std::vector<Boarder> boarders);
+	static void viewAll(std::vector<Boarder>& boarders);
+	static Boarder* search(std::vector<Boarder>& boarders, std::string& boarderCode);
 
 	// other functions
 	void display();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 class Room {
 private:
@@ -14,11 +15,12 @@ public:
 	// constructor
 	Room(std::string number, short int type, std::string condition, float rentFee, bool status);
 
-	// setters
-
 	// getters
 	std::string getType();
 	std::string getStatus();
+
+	// static functions
+	static Room* search(std::vector<Room>& rooms, std::string& roomNum);
 
 	// other functions
 	void displayInfo();

@@ -20,21 +20,14 @@ public:
 	// constructor
 	House(std::string code, std::string name, std::string address);
 
-	// setters
-	void setCode(std::string code);
-	void setName(std::string name);
-	void setAddress(std::string address);
-
 	// getters
 	std::string getCode();
-	std::string getName();
-	std::string getAddress();
 
 	// static functions
 	static void add(std::vector<House>& houses);
 	static void viewAll(std::vector<House>& houses);
-	static House& search(std::vector<House>& houses);
-	static House& search(std::vector<House>& houses, std::string houseCode);
+	static House* search(std::vector<House>& houses);
+	static House* search(std::vector<House>& houses, std::string& houseCode);
 
 	void displayInfo();
 

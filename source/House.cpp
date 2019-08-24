@@ -13,15 +13,8 @@ House::House(std::string code, std::string name, std::string address)
 	count++;
 }
 
-// SETTERS
-void House::setCode(std::string code) { this->code = code; }
-void House::setName(std::string name) { this->name = name; }
-void House::setAddress(std::string address) { this->address = address; }
-
 // GETTERS
 std::string House::getCode() { return code; }
-std::string House::getName() { return name; }
-std::string House::getAddress() { return address; }
 
 // STATIC FUNCTIONS
 // add -> adds a house to the list of houses
@@ -63,7 +56,7 @@ void House::viewAll(std::vector<House>& houses) {
 }
 
 // search (1) -> prompts the user to enter a houseCode and searches for it from the list of houses
-House& House::search(std::vector<House>& houses) {
+House* House::search(std::vector<House>& houses) {
 
 	std::string houseCode;
 	
@@ -75,7 +68,7 @@ House& House::search(std::vector<House>& houses) {
 
 		for (std::vector<House>::iterator itr = houses.begin(); itr != houses.end(); itr++) {
 			if (houseCode == itr->code)
-				return *itr;
+				return &(*itr);
 		}
 
 		std::cout << "House does not exist!\n";
@@ -83,12 +76,13 @@ House& House::search(std::vector<House>& houses) {
 }
 
 // search (2) -> searches for the specified houseCode from the list of houses
-House & House::search(std::vector<House>& houses, std::string houseCode)
+House* House::search(std::vector<House>& houses, std::string& houseCode)
 {
 	for (std::vector<House>::iterator itr = houses.begin(); itr != houses.end(); itr++) {
-			if (houseCode == itr->code)
-				return *itr;
-		}
+		if (houseCode == itr->code)
+			return &(*itr);
+	}
+	return nullptr;
 }
 
 // OTHER FUNCTIONS

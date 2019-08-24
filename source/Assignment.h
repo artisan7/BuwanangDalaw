@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "Boarder.h"
+#include "Room.h"
 #include "Date.h"
 
 class Assignment
@@ -12,6 +14,8 @@ private:
 	std::string roomNumber;
 	Date assignDate;
 	bool status;
+	Boarder* boarder;
+	Room* room;
 
 public:
 	// constructor
@@ -19,6 +23,7 @@ public:
 	
 	// getters
 	std::string getStatus();
+	Boarder& getBoarder();
 	
 	// static functions
 	static void viewAll(std::vector<Assignment>& assignList);

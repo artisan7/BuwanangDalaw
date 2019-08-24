@@ -11,6 +11,11 @@
 #include "Assignment.h"
 #include "Payment.h"
 
+void readHouseFile(std::string filepath);
+void readRoomFile(std::string filepath);
+void readBoarderFile(std::string filepath);
+void readAssignmentFile(std::string filepath);
+void readPaymentFile(std::string filepath);
 void mainMenu();
 void houseMenu();
 
@@ -19,12 +24,29 @@ std::vector<Boarder> boarders;
 std::vector<Assignment> assignmentList;
 std::vector<Payment> paymentRecord;
 
+// MAIN
 int main() {
+	
+	readHouseFile("house.txt");				// add houses from house.txt
+	readRoomFile("room.txt");				// add rooms from room.txt
+	readBoarderFile("boarder.txt");			// add boarders from boarder.txt
+	readAssignmentFile("assignment.txt");	// add assignments from assignment.txt
+	readPaymentFile("payment.txt");			// add payments from payment.txt
 
+	// menu
+	mainMenu();
+
+	std::cin.get();
+}
+
+
+// SUPPLEMENTARY FUNCTIONS
+// PRELIMINARIES
+// readHouseFile -> reads data for boarding houses
+void readHouseFile(std::string filepath) {
 	std::ifstream inFile;
 
-	// add boarding houses from file
-	inFile.open("house.txt");
+	inFile.open(filepath);
 
 	inFile.ignore(1000, '\n');
 	while (inFile.good()) {
@@ -33,7 +55,7 @@ int main() {
 		std::getline(inFile, code, ',');
 		std::getline(inFile, name, ',');
 		std::getline(inFile, address);
-		
+
 		if (code != "" || name != "" || address != "") {
 			House h(code, name, address);
 			houses.push_back(h);
@@ -41,9 +63,13 @@ int main() {
 	}
 
 	inFile.close();
+}
 
-	// add rooms from file
-	inFile.open("room.txt");
+// readRoomFile -> reads data for rooms
+void readRoomFile(std::string filepath) {
+	std::ifstream inFile;
+
+	inFile.open(filepath);
 
 	inFile.ignore(1000, '\n');
 	while (inFile.good()) {
@@ -63,14 +89,18 @@ int main() {
 
 		if (houseCode != "") {
 			Room r(rmNumber, rmType, rmCondition, rmRentFee, rmStatus);
-			House::search(houses, houseCode).addRoom(r);
+			House::search(houses, houseCode)->addRoom(r);
 		}
 	}
 
 	inFile.close();
+}
 
-	// add boarders from file
-	inFile.open("boarder.txt");
+// readBoarderFile -> reads data for boarders
+void readBoarderFile(std::string filepath) {
+	std::ifstream inFile;
+
+	inFile.open(filepath);
 
 	inFile.ignore(1000, '\n');
 	while (inFile.good()) {
@@ -96,9 +126,13 @@ int main() {
 	}
 
 	inFile.close();
-	
-	// add assignments from file
-	inFile.open("assignment.txt");
+}
+
+// readAssignmentFile -> reads data for assignments
+void readAssignmentFile(std::string filepath) {
+	std::ifstream inFile;
+
+	inFile.open(filepath);
 
 	inFile.ignore(1000, '\n');
 	while (inFile.good()) {
@@ -107,14 +141,14 @@ int main() {
 
 		std::getline(inFile, bCode, ',');
 		std::getline(inFile, rmNumber, ',');
-		
+
 		std::getline(inFile, aAssignDate, ',');
 		Date aAssignmentDate(aAssignDate);
-		
+
 		inFile >> aStatus;
-		
+
 		inFile.ignore(1000, '\n');
-		
+
 		if (bCode != "" || rmNumber != "" || aAssignDate != "") {
 			Assignment a(bCode, rmNumber, aAssignmentDate, aStatus);
 			assignmentList.push_back(a);
@@ -122,9 +156,13 @@ int main() {
 	}
 
 	inFile.close();
-	
-	// add payments from file
-	inFile.open("payment.txt");
+}
+
+// readPaymentFile -> reads data for payments
+void readPaymentFile(std::string filepath) {
+	std::ifstream inFile;
+
+	inFile.open(filepath);
 
 	inFile.ignore(1000, '\n');
 	while (inFile.good()) {
@@ -134,15 +172,15 @@ int main() {
 
 		std::getline(inFile, bCode, ',');
 		std::getline(inFile, rmNumber, ',');
-		
+
 		std::getline(inFile, pPayDate, ',');
 		Date pPaymentDate(pPayDate);
-		
+
 		char delim;
 		inFile >> pAmountDue >> delim >> pAmountPaid >> delim >> pStatus;
-		
+
 		inFile.ignore(1000, '\n');
-		
+
 		if (bCode != "" || rmNumber != "") {
 			Payment p(bCode, rmNumber, pPaymentDate, pAmountDue, pAmountPaid, pStatus);
 			paymentRecord.push_back(p);
@@ -150,16 +188,10 @@ int main() {
 	}
 
 	inFile.close();
-
-	Payment::viewAll(paymentRecord);
-
-	/*
-	// MENU
-	mainMenu();
-
-	std::cin.get();
 }
 
+// MENUS
+// mainMenu -> menu prompted on startup
 void mainMenu() {
 	char choice;
 	do {
@@ -185,11 +217,11 @@ void mainMenu() {
 			break;
 		}
 	} while (choice != 'x' && choice != 'X');
-	*/
 
 	std::cin.get();
 }
 
+// houseMenu -> menu for House option in Main Menu
 void houseMenu() {
 	char choice;
 	do {
@@ -213,10 +245,10 @@ void houseMenu() {
 			House::viewAll(houses);
 			break;
 		case '3':
-			House::search(houses).addRoom();
+			House::search(houses)->addRoom();
 			break;
 		case '4':
-			House::search(houses).viewRooms();
+			House::search(houses)->viewRooms();
 		}
 	} while (choice != 'x' && choice != 'X');
 }
