@@ -15,14 +15,20 @@ private:
 	bool status;
 
 public:
-	Boarder(std::string code, std::string name, Date bDate, std::string pNumber, std::string referrer, bool status);
+	Boarder(std::string code, std::string name, Date birthDate, std::string pNumber, std::string referrer, bool status);
 
 	// getters
-	std::string getStatus();
+	std::string getCode();
+	std::string getName();
+	std::string getPhoneNumber();
+	Date& getBirthDate();
+	bool getStatus();
 
 	// static functions
 	static void viewAll(std::vector<Boarder>& boarders);
+	static Boarder* search(std::vector<Boarder>& boarders);
 	static Boarder* search(std::vector<Boarder>& boarders, std::string& boarderCode);
+	static void add(std::vector<Boarder>& boarders);
 
 	// other functions
 	void display();

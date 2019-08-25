@@ -12,7 +12,6 @@ private:
 	std::string address;
 	
 	std::vector<Room> roomList;
-	int roomCount;
 
 	static int count;
 
@@ -22,6 +21,7 @@ public:
 
 	// getters
 	std::string getCode();
+	std::string getAddress();
 
 	// static functions
 	static void add(std::vector<House>& houses);
@@ -35,5 +35,4 @@ public:
 	void addRoom();
 	void addRoom(Room& r);
 	void viewRooms();
-
 };

@@ -8,13 +8,14 @@ int House::count = 0;
 
 // CONSTRUCTOR
 House::House(std::string code, std::string name, std::string address)
-	:code(code), name(name), address(address), roomCount(0)
+	:code(code), name(name), address(address)
 {
 	count++;
 }
 
 // GETTERS
 std::string House::getCode() { return code; }
+std::string House::getAddress() { return address; }
 
 // STATIC FUNCTIONS
 // add -> adds a house to the list of houses
@@ -119,16 +120,13 @@ void House::addRoom() {
 	std::cout << "Room Status [(0) occupied, (1) available]: ";
 	std::cin >> rStatus;
 
-	Room r(rNum, rType, rCondition, rRentFee, rStatus);
+	Room r(rNum, this->code, rType, rCondition, rRentFee, rStatus);
 
 	addRoom(r);
 }
 
 // addRoom (2) -> adds the specified room in the house
-void House::addRoom(Room & r) {
-	roomList.push_back(r);
-	roomCount++;
-}
+void House::addRoom(Room & r) { roomList.push_back(r); }
 
 // viewRooms -> views all rooms of the house
 void House::viewRooms() {
@@ -140,10 +138,8 @@ void House::viewRooms() {
 	for (std::vector<Room>::iterator itr = roomList.begin(); itr != roomList.end(); itr++)
 		itr->displayInfo();
 
-	printf("\nTotal # of Rooms: %d", roomCount);
+	printf("\nTotal # of Rooms: %d", roomList.size());
 
 	std::cout << std::endl << std::endl;
 	system("pause");
 }
-
-

@@ -1,10 +1,15 @@
 #include "Room.h"
 
+#include <iostream>
 #include <cstdio>
 
 // CONSTRUCTOR
-Room::Room(std::string number, short int type, std::string condition, float rentFee, bool status)
-	:number(number), type(type), condition(condition), rentFee(rentFee), status(status) {}
+Room::Room(std::string number, std::string houseCode, short int type, std::string condition, float rentFee, bool status)
+	:number(number), houseCode(houseCode), type(type), condition(condition), rentFee(rentFee), status(status) {}
+
+std::string Room::getNumber() { return number; }
+
+std::string Room::getHouseCode() { return houseCode; }
 
 // GETTERS
 // getType -> returns the room type based on designated value
@@ -23,7 +28,25 @@ std::string Room::getStatus() {
 }
 
 // STATIC FUNCTIONS
-// search -> search room with room number from list of rooms
+// search(1) -> prompts the user to enter room number and return room that corresponds to it
+Room * Room::search(std::vector<Room>& rooms) {
+
+	std::string roomNumber;
+
+	while (true) {
+		std::cout << "Enter Room Number: ";
+		std::cin >> roomNumber;
+
+		for (std::vector<Room>::iterator itr = rooms.begin(); itr != rooms.end(); itr++) {
+			if (roomNumber == itr->number)
+				return &(*itr);
+		}
+
+		std::cout << "Room does not exist!\n";
+	}
+}
+
+// search(2) -> search room with room number from list of rooms
 Room* Room::search(std::vector<Room>& rooms, std::string& roomNum) {
 	for (std::vector<Room>::iterator itr = rooms.begin(); itr != rooms.end(); itr++) {
 		if (itr->number == roomNum)
@@ -31,6 +54,8 @@ Room* Room::search(std::vector<Room>& rooms, std::string& roomNum) {
 	}
 	return nullptr;
 }
+
+void Room::add(std::vector<Room>& rooms, Room & r) { rooms.push_back(r); }
 
 //DISPLAY
 // displayInfo -> display formatted info of room in console
