@@ -1,6 +1,7 @@
 #include "House.h"
 
 #include <iostream>
+#include <fstream>
 #include <cstdio>
 #include <cstdlib>
 
@@ -84,6 +85,40 @@ House* House::search(std::vector<House>& houses, std::string& houseCode)
 			return &(*itr);
 	}
 	return nullptr;
+}
+
+// readHouseFile -> reads data for boarding houses
+void House::readFile(std::vector<House>& houses, std::string filepath) {
+	std::ifstream inFile;
+
+	inFile.open(filepath);
+
+	inFile.ignore(1000, '\n');
+	while (inFile.good()) {
+		std::string code, name, address;
+
+		std::getline(inFile, code, ',');
+		std::getline(inFile, name, ',');
+		std::getline(inFile, address);
+
+		if (code != "" || name != "" || address != "") {
+			House h(code, name, address);
+			houses.push_back(h);
+		}
+	}
+
+	inFile.close();
+}
+
+// writeFile -> writes the house list data to file
+void House::writeFile(std::vector<House>& houses, std::string filepath) {
+	std::ofstream outFile;
+	outFile.open(filepath);
+
+	outFile << "housecode,housename,address\n";
+
+	for (std::vector<House>::iterator itr = houses.begin(); itr != houses.end(); itr++)
+		outFile << itr->code << ',' << itr->name << ',' << itr->address << '\n';
 }
 
 // OTHER FUNCTIONS

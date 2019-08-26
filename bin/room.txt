@@ -2,13 +2,13 @@ roomnumber,housecode,roomtype,condition,monthly_rent,status
 B100,BHGN1,3,Good Condition,2399.99,1
 B101,BHGN1,3,Good Condition,2399.99,1
 B102,BHGN1,3,Good Condition,2399.99,1
-B200,BHGN1,2,Good Condition,3000.00,1
-B201,BHGN1,1,Great Condition,4000.00,1
-BH100,BHGN2,3,Walls need for repaint,2000.00,1
-BH101,BHGN2,3,Comfort room clogged,2000.00,1
-C100,CBTN1,3,Newly renovated,1800.00,1
-C101,CBTN1,3,Newly renovated,1800.00,1
-T100,TRL1,3,Newly renovated,1500.00,1
-T101,TRL1,3,Newly renovated,1500.00,1
+B200,BHGN1,2,Good Condition,3000,1
+B201,BHGN1,1,Great Condition,4000,1
+BH100,BHGN2,3,Walls need for repaint,2000,1
+BH101,BHGN2,3,Comfort room clogged,2000,1
+C100,CBTN1,3,Newly renovated,1800,1
+C101,CBTN1,3,Newly renovated,1800,1
+T100,TRL1,3,Newly renovated,1500,1
+T101,TRL1,3,Newly renovated,1500,1
 G100,GSIS1,3,Newly renovated,2999.99,1
 G101,GSIS1,3,Newly Renovated,2999.99,1

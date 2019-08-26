@@ -31,14 +31,16 @@ public:
 	
 	// static functions
 	static void add(std::vector<Assignment>& assignments, Boarder& boarder, Room& room, House& house);
+	static Assignment* search(std::vector<Assignment>& assignments, Boarder& b, Room& r);
 	static void viewAll(std::vector<Assignment>& assignments);
 	static void viewActive(std::vector<Assignment>& assignments);
 	static void viewActive(std::vector<Assignment>& assignments, House& h);
+
+	static void readFile(std::vector<Assignment>& assignments, std::string filepath, std::vector<House>& houses, std::vector<Boarder>& boarders, std::vector<Room>& rooms);
+	static void writeFile(std::vector<Assignment>& assignments, std::string filepath);
 	
 	// other functions
 	void display();
-	//void addAssignment(Assignment& a);
-	//void viewActive();
 	
 };
 

@@ -1,6 +1,7 @@
 #include "Room.h"
 
 #include <iostream>
+#include <fstream>
 #include <cstdio>
 
 // CONSTRUCTOR
@@ -8,8 +9,8 @@ Room::Room(std::string number, std::string houseCode, short int type, std::strin
 	:number(number), houseCode(houseCode), type(type), condition(condition), rentFee(rentFee), status(status) {}
 
 std::string Room::getNumber() { return number; }
-
 std::string Room::getHouseCode() { return houseCode; }
+float Room::getFee() { return rentFee; }
 
 // GETTERS
 // getType -> returns the room type based on designated value
@@ -55,7 +56,51 @@ Room* Room::search(std::vector<Room>& rooms, std::string& roomNum) {
 	return nullptr;
 }
 
+// add -> adds room object to list
 void Room::add(std::vector<Room>& rooms, Room & r) { rooms.push_back(r); }
+
+// readFile -> reads data for rooms
+void Room::readFile(std::vector<Room>& rooms, std::string filepath) {
+	std::ifstream inFile;
+
+	inFile.open(filepath);
+
+	inFile.ignore(1000, '\n');
+	while (inFile.good()) {
+		std::string rmNumber, houseCode, rmCondition;
+		short int rmType;
+		float rmRentFee;
+		bool rmStatus;
+		char delim;
+
+		std::getline(inFile, rmNumber, ',');
+		std::getline(inFile, houseCode, ',');
+		inFile >> rmType >> delim;
+		std::getline(inFile, rmCondition, ',');
+		inFile >> rmRentFee >> delim >> rmStatus;
+
+		inFile.ignore(1000, '\n');
+
+		// add to vector
+		if (houseCode != "") {
+			Room r(rmNumber, houseCode, rmType, rmCondition, rmRentFee, rmStatus);
+			Room::add(rooms, r);
+		}
+	}
+
+	inFile.close();
+}
+
+// writeFile -> writes the room list data to file
+void Room::writeFile(std::vector<Room>& rooms, std::string filepath) {
+	std::ofstream outFile;
+	outFile.open(filepath);
+
+	outFile << "roomnumber,housecode,roomtype,condition,monthly_rent,status\n";
+
+	for (std::vector<Room>::iterator itr = rooms.begin(); itr != rooms.end(); itr++)
+		outFile << itr->number << ',' << itr->houseCode << ',' << itr->type << ',' << itr->condition << ',' << itr->rentFee << ',' << itr->status << '\n';
+}
 
 //DISPLAY
 // displayInfo -> display formatted info of room in console

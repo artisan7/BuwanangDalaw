@@ -18,10 +18,19 @@ Date::Date(std::string dateString) {
 	ss >> month >> delim >> day >> delim >> year;
 }
 
+Date::Date(int year, int month, int day)
+	:month(month), day(day), year(year) {}
+
 // TO STRING
 std::string Date::toString() {
 	std::stringstream ss;
 	ss << getMonth() << ' ' << day << ", " << year;
+	return ss.str();
+}
+
+std::string Date::toSlashFormat() {
+	std::stringstream ss;
+	ss << month << '/' << day << "/" << year;
 	return ss.str();
 }
 
@@ -43,6 +52,10 @@ std::string Date::getMonth() {
 	default:	return ".";
 	}
 }
+
+int Date::getMonthNum() { return month; }
+int Date::getDay() { return day; }
+int Date::getYear() { return year; }
 
 // PROMPTS
 int Date::monthPrompt() {

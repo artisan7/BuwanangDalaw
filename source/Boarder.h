@@ -30,6 +30,12 @@ public:
 	static Boarder* search(std::vector<Boarder>& boarders, std::string& boarderCode);
 	static void add(std::vector<Boarder>& boarders);
 
+	static void readFile(std::vector<Boarder>& boarders, std::string filepath);
+	static void writeFile(std::vector<Boarder>& boarders, std::string filepath);
+
 	// other functions
 	void display();
+
+	// overloaded operators
+	bool operator==(Boarder& other);
 };

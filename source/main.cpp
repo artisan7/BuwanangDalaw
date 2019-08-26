@@ -11,7 +11,6 @@
 #include "Assignment.h"
 #include "Payment.h"
 
-void readHouseFile(std::string filepath);
 void readRoomFile(std::string filepath);
 void readBoarderFile(std::string filepath);
 void readAssignmentFile(std::string filepath);
@@ -31,179 +30,24 @@ std::vector<Payment> paymentRecord;
 // MAIN
 int main() {
 	
-	readHouseFile("house.txt");				// add houses from house.txt
-	readRoomFile("room.txt");				// add rooms from room.txt
-	readBoarderFile("boarder.txt");			// add boarders from boarder.txt
-	readAssignmentFile("assignment.txt");	// add assignments from assignment.txt
-	readPaymentFile("payment.txt");			// add payments from payment.txt
+	// read from files
+	House::readFile(houses, "house.txt");				// add houses from house.txt
+	Room::readFile(rooms, "room.txt");				// add rooms from room.txt
+	for (std::vector<Room>::iterator itr = rooms.begin(); itr != rooms.end(); itr++)
+		House::search(houses, itr->getHouseCode())->addRoom(*itr);
+	Boarder::readFile(boarders, "boarder.txt");			// add boarders from boarder.txt
+	Assignment::readFile(assignmentList, "assignment.txt", houses, boarders, rooms);	// add assignments from assignment.txt
+	Payment::readFile(paymentRecord, "payment.txt", boarders, rooms, assignmentList);			// add payments from payment.txt
 
 	// menu
 	mainMenu();
-}
 
-
-// SUPPLEMENTARY FUNCTIONS
-// PRELIMINARIES
-// readHouseFile -> reads data for boarding houses
-void readHouseFile(std::string filepath) {
-	std::ifstream inFile;
-
-	inFile.open(filepath);
-
-	inFile.ignore(1000, '\n');
-	while (inFile.good()) {
-		std::string code, name, address;
-
-		std::getline(inFile, code, ',');
-		std::getline(inFile, name, ',');
-		std::getline(inFile, address);
-
-		if (code != "" || name != "" || address != "") {
-			House h(code, name, address);
-			houses.push_back(h);
-		}
-	}
-
-	inFile.close();
-}
-
-// readRoomFile -> reads data for rooms
-void readRoomFile(std::string filepath) {
-	std::ifstream inFile;
-
-	inFile.open(filepath);
-
-	inFile.ignore(1000, '\n');
-	while (inFile.good()) {
-		std::string rmNumber, houseCode, rmCondition;
-		short int rmType;
-		float rmRentFee;
-		bool rmStatus;
-		char delim;
-
-		std::getline(inFile, rmNumber, ',');
-		std::getline(inFile, houseCode, ',');
-		inFile >> rmType >> delim;
-		std::getline(inFile, rmCondition, ',');
-		inFile >> rmRentFee >> delim >> rmStatus;
-
-		inFile.ignore(1000, '\n');
-
-		// add to vector
-		if (houseCode != "") {
-			Room r(rmNumber, houseCode, rmType, rmCondition, rmRentFee, rmStatus);
-			Room::add(rooms, r);
-			House::search(houses, houseCode)->addRoom(r);
-		}
-	}
-
-	inFile.close();
-}
-
-// readBoarderFile -> reads data for boarders
-void readBoarderFile(std::string filepath) {
-	std::ifstream inFile;
-
-	inFile.open(filepath);
-
-	inFile.ignore(1000, '\n');
-	while (inFile.good()) {
-		std::string bCode, bName, bBirth, bPhoneNumber, bReferrer;
-		bool bStatus;
-
-		std::getline(inFile, bCode, ',');
-		std::getline(inFile, bName, ',');
-
-		std::getline(inFile, bBirth, ',');
-		Date bBirthDate(bBirth);
-
-		std::getline(inFile, bPhoneNumber, ',');
-		std::getline(inFile, bReferrer, ',');
-		inFile >> bStatus;
-
-		inFile.ignore(1000, '\n');
-
-		// add to vector
-		if (bCode != "") {
-			Boarder b(bCode, bName, bBirthDate, bPhoneNumber, bReferrer, bStatus);
-			boarders.push_back(b);
-		}
-	}
-
-	inFile.close();
-}
-
-// readAssignmentFile -> reads data for assignments
-void readAssignmentFile(std::string filepath) {
-	std::ifstream inFile;
-
-	inFile.open(filepath);
-
-	inFile.ignore(1000, '\n');
-	while (inFile.good()) {
-		std::string bCode, rmNumber, aAssignDate;
-		bool aStatus;
-
-		std::getline(inFile, bCode, ',');
-		std::getline(inFile, rmNumber, ',');
-
-		std::getline(inFile, aAssignDate, ',');
-		Date aAssignmentDate(aAssignDate);
-
-		inFile >> aStatus;
-
-		inFile.ignore(1000, '\n');
-
-		// add to vector
-		if (bCode != "" || rmNumber != "" || aAssignDate != "") {
-			Boarder* b = Boarder::search(boarders, bCode);
-			Room* r = Room::search(rooms, rmNumber);
-			House* h = House::search(houses, r->getHouseCode());
-
-			Assignment a(*b, *r, *h, aAssignmentDate, aStatus);
-
-			assignmentList.push_back(a);
-		}
-	}
-
-	inFile.close();
-}
-
-// readPaymentFile -> reads data for payments
-void readPaymentFile(std::string filepath) {
-	std::ifstream inFile;
-
-	inFile.open(filepath);
-
-	inFile.ignore(1000, '\n');
-	while (inFile.good()) {
-		std::string bCode, rmNumber, pPayDate;
-		float pAmountDue, pAmountPaid;
-		bool pStatus;
-
-		std::getline(inFile, bCode, ',');
-		std::getline(inFile, rmNumber, ',');
-
-		std::getline(inFile, pPayDate, ',');
-		Date pPaymentDate(pPayDate);
-
-		char delim;
-		inFile >> pAmountDue >> delim >> pAmountPaid >> delim >> pStatus;
-
-		inFile.ignore(1000, '\n');
-
-		// add to vector
-		if (bCode != "" || rmNumber != "") {
-			Boarder* b = Boarder::search(boarders, bCode);
-			Room* r = Room::search(rooms, rmNumber);
-
-			Payment p(*b, *r, pPaymentDate, pAmountDue, pAmountPaid, pStatus);
-
-			paymentRecord.push_back(p);
-		}
-	}
-
-	inFile.close();
+	// write to files
+	House::writeFile(houses, "house.txt");
+	Room::writeFile(rooms, "room.txt");
+	Boarder::writeFile(boarders, "boarder.txt");
+	Assignment::writeFile(assignmentList, "assignment.txt");
+	Payment::writeFile(paymentRecord, "payment.txt");
 }
 
 // MENUS
@@ -312,13 +156,21 @@ void paymentMenu() {
 
 		// evaluate choice
 		if (choice == '1')
-			Payment::add(paymentRecord, assignmentList);
+			Payment::add(paymentRecord, assignmentList, boarders, rooms);
 		else if (choice == '2')
 			Payment::view(paymentRecord, *Boarder::search(boarders));
-		else if (choice == '3')
-			Payment::view(paymentRecord, Date::yearPrompt(), Date::monthPrompt());
-		else if (choice == '4')
-			Payment::view(paymentRecord, Date::yearPrompt());
+		else if (choice == '3') {
+			system("cls");
+			int month = Date::monthPrompt();
+			int year = Date::yearPrompt();
+			Date d(year, month);
+			Payment::view(paymentRecord, d);
+		}
+		else if (choice == '4') {
+			system("cls");
+			Date d(Date::yearPrompt());
+			Payment::view(paymentRecord, d);
+		}
 
 	} while (choice != 'x' && choice != 'X');
 }

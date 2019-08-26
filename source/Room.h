@@ -19,6 +19,7 @@ public:
 	// getters
 	std::string getNumber();
 	std::string getHouseCode();
+	float getFee();
 	std::string getType();
 	std::string getStatus();
 
@@ -26,6 +27,9 @@ public:
 	static Room* search(std::vector<Room>& rooms);
 	static Room* search(std::vector<Room>& rooms, std::string& roomNum);
 	static void add(std::vector<Room>& rooms, Room& r);
+
+	static void readFile(std::vector<Room>& rooms, std::string filepath);
+	static void writeFile(std::vector<Room>& rooms, std::string filepath);
 
 	// other functions
 	void displayInfo();

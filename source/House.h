@@ -29,6 +29,9 @@ public:
 	static House* search(std::vector<House>& houses);
 	static House* search(std::vector<House>& houses, std::string& houseCode);
 
+	static void readFile(std::vector<House>& houses, std::string filepath);
+	static void writeFile(std::vector<House>& houses, std::string filepath);
+
 	void displayInfo();
 
 	// room functions
