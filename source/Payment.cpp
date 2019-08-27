@@ -4,29 +4,33 @@
 #include <fstream>
 #include <cstdio>
 
+std::vector<Payment> Payment::masterList;
+
 // CONSTRUCTOR
 Payment::Payment(Assignment& a, Date paymentDate, float amountDue, float amountPaid, bool status)
-	: assignment(a), paymentDate(paymentDate), amountDue(amountDue), amountPaid(amountPaid), status(status) {}
-
-// getters
-// getStatus -> returns active/inactive depending on value
-std::string Payment::getStatus() {
-	return (status) ? "active" : "inactive";
+	: assignment(a), paymentDate(paymentDate), amountDue(amountDue), amountPaid(amountPaid), status(status)
+{
+	masterList.push_back(*this);
 }
 
-// static functions
+// GETTERS
+// getStatus -> returns active/inactive depending on value
+std::string Payment::getStatus() { return (status) ? "active" : "inactive"; }
+std::vector<Payment>& Payment::getMasterList() { return masterList; }
+
+// STATIC FUNCTIONS
 // viewAll -> displays all payments in the payment record
-void Payment::viewAll(std::vector<Payment>& record) {
+void Payment::viewAll() {
 	printf("%-15s%-15s%-20s%15s%15s%10s\n", "Boarder Code", "Room Number", "Assignment Date", "Amount Due", "Amount Paid", "Status");
 	printf("%-15s%-15s%-20s%15s%15s%10s\n", "-----", "-----", "-----", "-----", "-----", "-----");
 		
-	for (std::vector<Payment>::iterator itr = record.begin(); itr != record.end(); itr++)
+	for (std::vector<Payment>::iterator itr = masterList.begin(); itr != masterList.end(); itr++)
 		itr->display();
 }
 
 // add -> prompts the user for information and adds to payment record
-void Payment::add(std::vector<Payment>& payments, std::vector<Assignment>& assignments, std::vector<Boarder>& boarders, std::vector<Room>& rooms) {
-	std::string bCode, rmNumber;
+void Payment::add(std::vector<Assignment>& assignments, std::vector<Boarder>& boarders, std::vector<Room>& rooms) {
+	std::string boarderCode, roomNumber;
 	float amountDue, amountPaid;
 
 	system("cls");
@@ -34,10 +38,10 @@ void Payment::add(std::vector<Payment>& payments, std::vector<Assignment>& assig
 	std::cout << "Add New Payment\n---\n";
 
 	std::cout << "Boarder Code: ";
-	std::cin >> bCode;
+	std::cin >> boarderCode;
 	
 	std::cout << "Room Number: ";
-	std::cin >> rmNumber;
+	std::cin >> roomNumber;
 
 	std::cout << "Payment Date: \n";
 	Date paymentDate;
@@ -48,20 +52,19 @@ void Payment::add(std::vector<Payment>& payments, std::vector<Assignment>& assig
 	std::cout << "Amount Paid: ";
 	std::cin >> amountPaid;
 
-	Assignment* a = Assignment::search(assignments, *Boarder::search(boarders, bCode), *Room::search(rooms, rmNumber));
+	Assignment* a = Assignment::search(*Boarder::search(boarderCode), *Room::search(roomNumber));
 
 	if (a != nullptr) {
 		Payment p(*a, paymentDate, amountDue, amountPaid, 1);
-		payments.push_back(p);
 	}
 }
 
-void Payment::view(std::vector<Payment>& payments, Boarder& b) {
+void Payment::view(Boarder& b) {
 	printf("Total Received Payments from %s\n-----\n", b.getName().c_str());
 	
 	int count = 0;
 	float totalDue = 0, totalPaid = 0;
-	for (std::vector<Payment>::iterator itr = payments.begin(); itr != payments.end(); itr++) {
+	for (std::vector<Payment>::iterator itr = masterList.begin(); itr != masterList.end(); itr++) {
 		Assignment& a = itr->assignment;
 
 		if (a.getBoarder() == b) {
@@ -84,7 +87,7 @@ void Payment::view(std::vector<Payment>& payments, Boarder& b) {
 	system("pause");
 }
 
-void Payment::view(std::vector<Payment>& payments, Date& d) {
+void Payment::view(Date& d) {
 	printf("\nPayments Received for the %s of ", (d.getMonthNum() == 0) ? "Year" : "Month");
 	if (d.getMonthNum() != 0) printf("%s ", d.getMonth().c_str());
 	printf("%d\n\n", d.getYear());
@@ -92,7 +95,7 @@ void Payment::view(std::vector<Payment>& payments, Date& d) {
 
 	int count = 0;
 	float totalDue = 0, totalPaid = 0;
-	for (std::vector<Payment>::iterator itr = payments.begin(); itr != payments.end(); itr++) {
+	for (std::vector<Payment>::iterator itr = masterList.begin(); itr != masterList.end(); itr++) {
 		if (itr->paymentDate.getYear() == d.getYear() && (d.getMonthNum() == 0 || itr->paymentDate.getMonthNum() == d.getMonthNum())) {
 			Assignment& a = itr->assignment;
 
@@ -117,7 +120,7 @@ void Payment::view(std::vector<Payment>& payments, Date& d) {
 }
 
 // readFile -> reads data for payments
-void Payment::readFile(std::vector<Payment>& payments, std::string filepath, std::vector<Boarder>& boarders, std::vector<Room>& rooms, std::vector<Assignment>& assignments) {
+void Payment::readFile(std::string filepath, std::vector<Boarder>& boarders, std::vector<Room>& rooms, std::vector<Assignment>& assignments) {
 	std::ifstream inFile;
 
 	inFile.open(filepath);
@@ -141,25 +144,22 @@ void Payment::readFile(std::vector<Payment>& payments, std::string filepath, std
 
 		// add to vector
 		if (boarderCode != "" || roomNumber != "") {
-			Assignment* a = Assignment::search(assignments, *Boarder::search(boarders, boarderCode), *Room::search(rooms, roomNumber));
-
-			if (a != nullptr) {
+			Assignment* a = Assignment::search(*Boarder::search(boarderCode), *Room::search(roomNumber));
+			if (a != nullptr)
 				Payment p(*a, paymentDate, amountDue, amountPaid, status);
-				payments.push_back(p);
-			}
 		}
 	}
 	inFile.close();
 }
 
 // writeFile -> writes the payments list data to file
-void Payment::writeFile(std::vector<Payment>& payments, std::string filepath) {
+void Payment::writeFile(std::string filepath) {
 	std::ofstream outFile;
 	outFile.open(filepath);
 
 	outFile << "boarder_code,roomnumber,payment_date,due_amount,amount_paid,status\n";
 
-	for (std::vector<Payment>::iterator itr = payments.begin(); itr != payments.end(); itr++)
+	for (std::vector<Payment>::iterator itr = masterList.begin(); itr != masterList.end(); itr++)
 		outFile << itr->assignment.getBoarder().getCode() << ',' << itr->assignment.getRoom().getNumber() << ',' << itr->paymentDate.toSlashFormat() << ',' << itr->amountDue << ',' << itr->amountPaid << ',' << itr->status << '\n';
 }
 

@@ -12,3 +12,5 @@ T100,TRL1,3,Newly renovated,1500,1
 T101,TRL1,3,Newly renovated,1500,1
 G100,GSIS1,3,Newly renovated,2999.99,1
 G101,GSIS1,3,Newly Renovated,2999.99,1
+C200,CBTN2,2,pristine,2599.99,1
+C100,CBTN2,3,coooool,2599.99,1

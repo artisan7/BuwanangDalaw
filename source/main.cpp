@@ -1,8 +1,4 @@
 #include <iostream>
-#include <string>
-#include <fstream>
-#include <vector>
-#include <cstdlib>
 
 #include "House.h"
 #include "Boarder.h"
@@ -21,33 +17,25 @@ void houseMenu();
 void boarderMenu();
 void paymentMenu();
 
-std::vector<House> houses;
-std::vector<Room> rooms;
-std::vector<Boarder> boarders;
-std::vector<Assignment> assignmentList;
-std::vector<Payment> paymentRecord;
-
 // MAIN
 int main() {
 	
 	// read from files
-	House::readFile(houses, "house.txt");				// add houses from house.txt
-	Room::readFile(rooms, "room.txt");				// add rooms from room.txt
-	for (std::vector<Room>::iterator itr = rooms.begin(); itr != rooms.end(); itr++)
-		House::search(houses, itr->getHouseCode())->addRoom(*itr);
-	Boarder::readFile(boarders, "boarder.txt");			// add boarders from boarder.txt
-	Assignment::readFile(assignmentList, "assignment.txt", houses, boarders, rooms);	// add assignments from assignment.txt
-	Payment::readFile(paymentRecord, "payment.txt", boarders, rooms, assignmentList);			// add payments from payment.txt
+	Room::readFile("room.txt");																						// add rooms from room.txt
+	House::readFile("house.txt", Room::getMasterList());															// add houses from house.txt
+	Boarder::readFile("boarder.txt");																				// add boarders from boarder.txt
+	Assignment::readFile("assignment.txt", House::getMasterList(), Boarder::getMasterList(), Room::getMasterList());// add assignments from assignment.txt
+	Payment::readFile("payment.txt", Boarder::getMasterList(), Room::getMasterList(), Assignment::getMasterList());	// add payments from payment.txt
 
-	// menu
+	//  main interface
 	mainMenu();
 
 	// write to files
-	House::writeFile(houses, "house.txt");
-	Room::writeFile(rooms, "room.txt");
-	Boarder::writeFile(boarders, "boarder.txt");
-	Assignment::writeFile(assignmentList, "assignment.txt");
-	Payment::writeFile(paymentRecord, "payment.txt");
+	House::writeFile("house.txt");
+	Room::writeFile("room.txt");
+	Boarder::writeFile("boarder.txt");
+	Assignment::writeFile("assignment.txt");
+	Payment::writeFile("payment.txt");
 }
 
 // MENUS
@@ -94,20 +82,24 @@ void houseMenu() {
 
 		// evaluate choice
 		if (choice == '1')
-			House::add(houses);
+			House::add();
 		else if (choice == '2')
-			House::viewAll(houses);
-		else if (choice == '3')
-			House::search(houses)->addRoom();
-		else if (choice == '4')
-			House::search(houses)->viewRooms();
-
+			House::viewAll();
+		else if (choice == '3') {
+			House* h = House::search();
+			if (h != nullptr) h->addRoom();
+		}
+		else if (choice == '4') {
+			House* h = House::search();
+			if (h != nullptr) h->viewRooms();
+		}
 	} while (choice != 'x' && choice != 'X');
 }
 
 // boarderMenu -> menu for Boarder option in Main Menu
 void boarderMenu() {
 	char choice;
+
 	do {
 		system("cls");
 
@@ -123,17 +115,19 @@ void boarderMenu() {
 
 		// evaluate choice
 		if (choice == '1')
-			Boarder::add(boarders);
+			Boarder::add();
 		else if (choice == '2')
-			Assignment::viewActive(assignmentList);
+			Assignment::viewActive();
 		else if (choice == '3') {
-			Boarder* b = Boarder::search(boarders);
-			Room* r = Room::search(rooms);
-			House* h = House::search(houses, r->getHouseCode());
-			Assignment::add(assignmentList, *b, *r, *h);
+			Boarder* b = Boarder::search();
+			if (b != nullptr) {
+				Room* r = Room::search();
+				if (r != nullptr)
+					Assignment::add(*b, *r, *House::search(r->getHouseCode()));
+			}
 		}
 		else if (choice == '4')
-			Assignment::viewActive(assignmentList, *House::search(houses));
+			Assignment::viewActive(*House::search());
 
 	} while (choice != 'x' && choice != 'X');
 }
@@ -156,20 +150,20 @@ void paymentMenu() {
 
 		// evaluate choice
 		if (choice == '1')
-			Payment::add(paymentRecord, assignmentList, boarders, rooms);
+			Payment::add(Assignment::getMasterList(), Boarder::getMasterList(), Room::getMasterList());
 		else if (choice == '2')
-			Payment::view(paymentRecord, *Boarder::search(boarders));
+			Payment::view(*Boarder::search());
 		else if (choice == '3') {
 			system("cls");
 			int month = Date::monthPrompt();
 			int year = Date::yearPrompt();
 			Date d(year, month);
-			Payment::view(paymentRecord, d);
+			Payment::view(d);
 		}
 		else if (choice == '4') {
 			system("cls");
 			Date d(Date::yearPrompt());
-			Payment::view(paymentRecord, d);
+			Payment::view(d);
 		}
 
 	} while (choice != 'x' && choice != 'X');

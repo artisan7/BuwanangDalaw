@@ -4,9 +4,16 @@
 #include <fstream>
 #include <cstdio>
 
+std::vector<Assignment> Assignment::masterList;
+
 // CONSTRUCTOR
 Assignment::Assignment(Boarder& b, Room& r, House& h, Date assignDate, bool status)
-	:boarder(b), room(r), house(h), assignDate(assignDate), status(status) {}
+	:boarder(b), room(r), house(h), assignDate(assignDate), status(status)
+{
+	boarder.setStatus(1);	// set boarder status to active
+	room.setStatus(1);		// set room status to occupied
+	masterList.push_back(*this);
+}
 
 // GETTERS
 Room& Assignment::getRoom() { return room; }
@@ -14,18 +21,18 @@ House & Assignment::getHouse() { return house;  }
 Date& Assignment::getAssignDate() { return assignDate; }
 Boarder & Assignment::getBoarder() { return boarder; }
 bool Assignment::getStatus() { return status; }
+std::vector<Assignment>& Assignment::getMasterList() { return masterList; }
 
 // STATIC FUNCTIONS
 // add -> adds a new assignment to the list
-void Assignment::add(std::vector<Assignment>& assignments, Boarder& boarder,  Room& room, House& house) {
+void Assignment::add(Boarder& boarder,  Room& room, House& house) {
 	Date assignDate;
 	Assignment a(boarder, room, house, assignDate, 1);
-	assignments.push_back(a);
 }
 
 // search -> searches for an assignment using boarder and room information
-Assignment* Assignment::search(std::vector<Assignment>& assignments, Boarder& b, Room& r) {
-	for (std::vector<Assignment>::iterator itr = assignments.begin(); itr != assignments.end(); itr++) {
+Assignment* Assignment::search(Boarder& b, Room& r) {
+	for (std::vector<Assignment>::iterator itr = masterList.begin(); itr != masterList.end(); itr++) {
 		if (itr->boarder.getCode() == b.getCode() && itr->room.getNumber() == r.getNumber())
 			return &(*itr);
 	}
@@ -33,17 +40,17 @@ Assignment* Assignment::search(std::vector<Assignment>& assignments, Boarder& b,
 }
 
 // viewAll -> displays all assignments in the assignment record
-void Assignment::viewAll(std::vector<Assignment>& assignments) {
+void Assignment::viewAll() {
 	printf("-------------------VIEW ACTIVE BOARDERS---------------------");
 	printf("%-15s%-15s%-20s%-10s\n", "Boarder Code", "Room Number", "Assignment Date", "Status");
 	printf("%-15s%-15s%-20s%-10s\n", "-----", "-----", "-----", "-----");
 	
-	for (std::vector<Assignment>::iterator itr = assignments.begin(); itr != assignments.end(); itr++)
+	for (std::vector<Assignment>::iterator itr = masterList.begin(); itr != masterList.end(); itr++)
 		itr->display();
 }
 
 // viewActive (1) -> views all active assignments
-void Assignment::viewActive(std::vector<Assignment>& assignments) {
+void Assignment::viewActive() {
 	system("cls");
 
 	printf("----------------------------------VIEW ACTIVE BOARDERS------------------------------------\n");
@@ -51,7 +58,7 @@ void Assignment::viewActive(std::vector<Assignment>& assignments) {
 	printf("%-15s%-20s%-20s%-15s%s\n", "-----", "-----", "-----", "-----", "-----");
 
 	int count = 0;
-	for (std::vector<Assignment>::iterator itr = assignments.begin(); itr != assignments.end(); itr++) {
+	for (std::vector<Assignment>::iterator itr = masterList.begin(); itr != masterList.end(); itr++) {
 		if (itr->getStatus()) {
 			Boarder& b = itr->getBoarder();
 			House& h = itr->getHouse();
@@ -69,7 +76,7 @@ void Assignment::viewActive(std::vector<Assignment>& assignments) {
 }
 
 // viewActive (2) -> views all active assignments in a specified house
-void Assignment::viewActive(std::vector<Assignment>& assignments, House& h) {
+void Assignment::viewActive(House& h) {
 
 	system("cls");
 
@@ -78,7 +85,7 @@ void Assignment::viewActive(std::vector<Assignment>& assignments, House& h) {
 	printf("%-15s%-20s%s\n", "-----", "-----", "-----");
 
 	int count = 0;
-	for (std::vector<Assignment>::iterator itr = assignments.begin(); itr != assignments.end(); itr++) {
+	for (std::vector<Assignment>::iterator itr = masterList.begin(); itr != masterList.end(); itr++) {
 		if (itr->getHouse().getCode() == h.getCode() && itr->getStatus()) {
 			std::string roomNumber = itr->room.getNumber();
 			std::string assignDate = itr->assignDate.toString();
@@ -95,7 +102,7 @@ void Assignment::viewActive(std::vector<Assignment>& assignments, House& h) {
 }
 
 // readFile -> reads data for assignments
-void Assignment::readFile(std::vector<Assignment>& assignments, std::string filepath, std::vector<House>& houses, std::vector<Boarder>& boarders, std::vector<Room>& rooms) {
+void Assignment::readFile(std::string filepath, std::vector<House>& houses, std::vector<Boarder>& boarders, std::vector<Room>& rooms) {
 	std::ifstream inFile;
 
 	inFile.open(filepath);
@@ -117,12 +124,11 @@ void Assignment::readFile(std::vector<Assignment>& assignments, std::string file
 
 		// add to vector
 		if (boarderCode != "" || roomNumber != "" || assignDate != "") {
-			Boarder* b = Boarder::search(boarders, boarderCode);
-			Room* r = Room::search(rooms, roomNumber);
-			House* h = House::search(houses, r->getHouseCode());
+			Boarder* b = Boarder::search(boarderCode);
+			Room* r = Room::search(roomNumber);
+			House* h = House::search(r->getHouseCode());
 
 			Assignment a(*b, *r, *h, assignmentDate, status);
-			assignments.push_back(a);
 		}
 	}
 
@@ -130,13 +136,13 @@ void Assignment::readFile(std::vector<Assignment>& assignments, std::string file
 }
 
 // writeFile -> writes the assignment list data to file
-void Assignment::writeFile(std::vector<Assignment>& assignments, std::string filepath) {
+void Assignment::writeFile(std::string filepath) {
 	std::ofstream outFile;
 	outFile.open(filepath);
 
 	outFile << "boarder_code,roomnumber,assign_date,status\n";
 
-	for (std::vector<Assignment>::iterator itr = assignments.begin(); itr != assignments.end(); itr++)
+	for (std::vector<Assignment>::iterator itr = masterList.begin(); itr != masterList.end(); itr++)
 		outFile << itr->boarder.getCode() << ',' << itr->room.getNumber() << ',' << itr->assignDate.toSlashFormat() << ',' << itr->status << '\n';
 }
 

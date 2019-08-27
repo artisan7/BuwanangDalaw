@@ -10,10 +10,10 @@ private:
 	std::string code;
 	std::string name;
 	std::string address;
-	
+
 	std::vector<Room> roomList;
 
-	static int count;
+	static std::vector<House> masterList;
 
 public:
 	// constructor
@@ -22,15 +22,16 @@ public:
 	// getters
 	std::string getCode();
 	std::string getAddress();
+	static std::vector<House>& getMasterList();
 
 	// static functions
-	static void add(std::vector<House>& houses);
-	static void viewAll(std::vector<House>& houses);
-	static House* search(std::vector<House>& houses);
-	static House* search(std::vector<House>& houses, std::string& houseCode);
+	static void add();
+	static void viewAll();
+	static House* search();
+	static House* search(std::string houseCode);
 
-	static void readFile(std::vector<House>& houses, std::string filepath);
-	static void writeFile(std::vector<House>& houses, std::string filepath);
+	static void readFile(std::string filepath, std::vector<Room>& rooms);
+	static void writeFile(std::string filepath);
 
 	void displayInfo();
 
@@ -38,4 +39,7 @@ public:
 	void addRoom();
 	void addRoom(Room& r);
 	void viewRooms();
+
+	// overloaded operators
+	bool operator==(House& other);
 };

@@ -4,3 +4,4 @@ BHGN2,NHA Buhangin,B8 L4 NHA Buhangin Davao City
 CBTN1,DECA Cabantian,Deca Homes Cabantian Davao City
 TRL1,DECA Toril,Deca Homes Toril Davao City
 GSIS1,GSIS Matina,GSIS Matina Davao City
+CBTN2,Country Homes Cabantian,B3 L4 Country Homes Cabantian Davao City

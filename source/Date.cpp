@@ -5,9 +5,9 @@
 
 //CONSTRUCTORS
 Date::Date() {
-	int month = monthPrompt();
-	int day = dayPrompt(month);
-	int year = yearPrompt();
+	month = monthPrompt();
+	day = dayPrompt(month);
+	year = yearPrompt();
 }
 
 Date::Date(std::string dateString) {
